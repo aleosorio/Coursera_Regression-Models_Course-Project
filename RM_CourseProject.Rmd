@@ -10,22 +10,33 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Choosing the Model
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+As 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Appendix 1: Preliminary Data Analysis
 
-```{r cars}
-summary(cars)
+Basic properties of the 'mtcars' dataset:
+
+```{r, echo = FALSE}
+str(mtcars)
 ```
 
-## Including Plots
+So, we're talking of a small sample of only 32 observations.
 
-You can also embed plots, for example:
+Additionally, the visual correlation between variables can be seen as follows:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r, echo = FALSE}
+pairs(~ ., mtcars)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Appendix 2: Choosing the Predictors
+
+After studying the meaning of each variable, which shows it's a consecuence of the rest of variables 'qsec' (1/4 mile time) is eliminated from the analysis.
+
+The rest of the variables make sense as potential predictors not only from their meanings, but also by the visual correlations between them and 'mpg', as observed in Appendix 1 (such as the inverse relation between 'mpg' and 'hp' or 'wt', among others). 
+
+## Appendix 3: Choosing the Model Type
+
+Given the nature of the analysis (continuous outcome, obtained from discrete and continuous predictors), the size of the dataset (only 32 observations), plus the visual correlations observed between 'mpg' (the outcome) and its predictors, the model to be used wil be linear (lm type).
+
