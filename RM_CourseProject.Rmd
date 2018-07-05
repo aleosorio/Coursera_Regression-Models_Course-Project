@@ -46,3 +46,57 @@ Besides aerodynamics (not available in the dataset), the visual correlations bet
 
 ## Appendix 4: Regression Modeling
 
+For the regression analysis, two types of models were used.
+
+The first one with different intersection points but the same slope for all regression lines (no interaction between 'am' -the dummy factor regressor- and the rest of the regressors), such as:
+
+```{r, echo=FALSE}
+fit1am <- lm(mpg ~ factor(am), mtcars)
+fit1disp <- lm(mpg ~ disp, mtcars)
+fit1gear <- lm(mpg ~ gear, mtcars)
+fit1hp <- lm(mpg ~ hp, mtcars)
+fit1wt <- lm(mpg ~ wt, mtcars)
+fit2disp_am <- lm(mpg ~ disp + factor(am), mtcars)
+fit2gear_am <- lm(mpg ~ factor(gear) + factor(am), mtcars)
+fit2hp_am <- lm(mpg ~ hp + factor(am), mtcars)
+fit2wt_am <- lm(mpg ~ wt + factor(am), mtcars)
+fit3disp_gear_am <- lm(mpg ~ disp + factor(gear) + factor(am), mtcars)
+fit3gear_hp_am <- lm(mpg ~ factor(gear) + hp + factor(am), mtcars)
+fit3gear_wt_am <- lm(mpg ~ factor(gear) + wt + factor(am), mtcars)
+fit3hp_disp_am <- lm(mpg ~ hp + disp + factor(am), mtcars)
+fit3hp_wt_am <- lm(mpg ~ hp + wt + factor(am), mtcars)
+fit4wt_hp_disp_am <- lm(mpg ~ wt + hp + disp + factor(am), mtcars)
+fit4wt_hp_gear_am <- lm(mpg ~ wt + hp + factor(gear) + factor(am), mtcars)
+summary(fit3hp_wt_am)$call
+```
+
+The second one, with different intersects AND slopes for regression lines (factor(am):regressor type interactions), such as:
+
+```{r, echo=FALSE}
+fitint2disp_am <- lm(mpg ~ disp + factor(am) + factor(am):disp, mtcars)
+fitint2gear_am <- lm(mpg ~ factor(gear) + factor(am) + factor(am):factor(gear), mtcars)
+fitint2hp_am <- lm(mpg ~ hp + factor(am) + factor(am):hp, mtcars)
+fitint2wt_am <- lm(mpg ~ wt + factor(am) + factor(am):wt, mtcars)
+fitint3disp_gear_am <- lm(mpg ~ disp + factor(gear) + factor(am) + factor(am):disp + 
+    factor(am):factor(gear), mtcars)
+fitint3gear_hp_am <- lm(mpg ~ factor(gear) + hp + factor(am) + factor(am):factor(gear) + 
+    factor(am):hp, mtcars)
+fitint3gear_wt_am <- lm(mpg ~ factor(gear) + wt + factor(am) + factor(am):factor(gear) + 
+    factor(am):wt, mtcars)
+fitint3hp_disp_am <- lm(mpg ~ hp + disp + factor(am) + factor(am):hp + 
+    factor(am):disp, mtcars)
+fitint3hp_wt_am <- lm(mpg ~ hp + wt + factor(am) + factor(am):hp + 
+    factor(am):wt, mtcars)
+fitint4wt_hp_disp_am <- lm(mpg ~ wt + hp + disp + factor(am) + factor(am):wt + factor(am):hp + 
+    factor(am):disp, mtcars)
+fitint4wt_hp_gear_am <- lm(mpg ~ wt + hp + factor(gear) + factor(am) + factor(am):wt + factor(am):hp + 
+    factor(am):factor(gear), mtcars)
+summary(fitint3hp_wt_am)$call
+```
+
+Additionally, ANOVA comparisons were used in order to determine the best regressor mix for each model.
+
+### Different intersection points, with same slopes
+
+### Different intersection points and slopes
+
