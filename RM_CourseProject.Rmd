@@ -8,6 +8,10 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(car)
+data(mtcars)
+mtcars <- data.frame(mtcars)
 ```
 
 ## Choosing the Model
@@ -24,19 +28,21 @@ str(mtcars)
 
 So, we're talking of a small sample of only 32 observations.
 
-Additionally, the visual correlation between variables can be seen as follows:
+Additionally, visual correlations among pairs of potential variables can be seen as follows:
 
 ```{r, echo = FALSE}
 pairs(~ ., mtcars)
 ```
 
-## Appendix 2: Choosing the Predictors
+## Appendix 2: Model Selection
 
-After studying the meaning of each variable, which shows it's a consecuence of the rest of variables 'qsec' (1/4 mile time) is eliminated from the analysis.
+Given the nature of the analysis (continuous outcome, obtained from discrete and continuous regressors), the size of the dataset (only 32 observations), plus the visual correlations observed between 'mpg' (the outcome) and its potential regressors, the model to be used wil be linear (lm type), with 'am' as a not-so-dummy binary-factor variable.
 
-The rest of the variables make sense as potential predictors not only from their meanings, but also by the visual correlations between them and 'mpg', as observed in Appendix 1 (such as the inverse relation between 'mpg' and 'hp' or 'wt', among others). 
+## Appendix 3: Choosing Preliminary Regressors
 
-## Appendix 3: Choosing the Model Type
+After some web research (such as http://www.driverside.com/auto-library/top_10_factors_contributing_to_fuel_economy-317 and https://www.quora.com/On-what-factors-does-mileage-of-a-vehicle-depend), the main variables (and therefore candidates for main regresors), are: displacement, power, aerodynamics, weight and number of forward gears.
 
-Given the nature of the analysis (continuous outcome, obtained from discrete and continuous predictors), the size of the dataset (only 32 observations), plus the visual correlations observed between 'mpg' (the outcome) and its predictors, the model to be used wil be linear (lm type).
+Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Appendix 1 (such as the inverse relation between 'mpg' and 'hp' or 'wt', among others). Therefore, they were the first candidates for regression modeling in the next appendix.
+
+## Appendix 4: Regression Modeling
 
