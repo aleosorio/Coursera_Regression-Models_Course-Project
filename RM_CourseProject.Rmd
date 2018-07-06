@@ -40,9 +40,28 @@ Given the nature of the analysis (continuous outcome, obtained from discrete and
 
 ## Appendix 3: Choosing Preliminary Regressors
 
-After some web research (such as http://www.driverside.com/auto-library/top_10_factors_contributing_to_fuel_economy-317 and https://www.quora.com/On-what-factors-does-mileage-of-a-vehicle-depend), the main variables (and therefore candidates for main regresors), are: displacement, power, aerodynamics, weight and number of forward gears.
+A preliminary analysis considered all mtcars variables as potential regressors.  With variables 'cyl', 'vs', 'am', 'gear' and 'carb' as factors, the following lm function was analysed:
 
-Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Appendix 1 (such as the inverse relation between 'mpg' and 'hp' or 'wt', among others). Therefore, they were the first candidates for regression modeling in the next appendix.
+```{r, echo=FALSE}
+mtcars2 <- mtcars
+mtcars2$cyl <- factor(mtcars$cyl)
+mtcars2$vs <- factor(mtcars$vs)
+mtcars2$am <- factor(mtcars$am)
+mtcars2$gear <- factor(mtcars$gear)
+mtcars2$carb <- factor(mtcars$carb)
+```
+
+```{r}
+fitAll <- lm(mpg ~ ., mtcars2)
+summary(fitAll)$coef
+```
+
+
+P-value based, no variable makes the cut (with 'hp' and 'wt' the closest, though). Therefore, the first conclusion was that some industry research was required in order to determine the best regressor candidates.
+
+After some web research (such as http://www.driverside.com/auto-library/top_10_factors_contributing_to_fuel_economy-317 and https://www.quora.com/On-what-factors-does-mileage-of-a-vehicle-depend), the main variables suggested (and therefore candidates for main regresors), were: displacement ('disp'), power ('hp'), aerodynamics, weight ('wt') and number of forward gears ('gear').
+
+Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Appendix 1 (such as the inverse relation between 'mpg' and  both 'hp' or 'wt' -both of which had the lowest P-values when including all variables in the model, as seen before-). Therefore, besides 'am' (required in order to answer the main question), they were selected as candidates for regression modeling in the next appendix.
 
 ## Appendix 4: Regression Modeling
 
