@@ -63,7 +63,7 @@ After some web research (such as http://www.driverside.com/auto-library/top_10_f
 
 Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Appendix 1 (such as the inverse relation between 'mpg' and  both 'hp' or 'wt' -both of which had the lowest P-values when including all variables in the model, as seen before-). Therefore, including 'am' (required in order to answer the main question), they were selected as candidates for regression modeling in the next appendix.
 
-Finally, given the lowest P-value results obtained by 'wt' and 'hp' regressors (in comparison with the rest), plus well known Weight/Power KPI (Key Performance Indicator) from the industry, in further analysis both 'wt' and 'hp' will be considered primary potential regressors, while 'disp' and 'gear' will be considered secondary potential regressors.
+Finally, given the lowest P-value results obtained by 'wt' and 'hp' regressors (in comparison with the rest), plus the well known Weight/Power KPI (Key Performance Indicator) from the automotive industry, in further analysis both 'wt' and 'hp' will be considered primary potential regressors while 'disp' and 'gear' will be considered secondary potential regressors (just to prioritize further analysis. Cuantitative analysis will finally determine which regressors to keep).
 
 ## Appendix 4: Regression Modeling
 
@@ -81,6 +81,7 @@ fit2disp_am <- lm(mpg ~ disp + factor(am), mtcars)
 fit2gear_am <- lm(mpg ~ factor(gear) + factor(am), mtcars)
 fit2hp_am <- lm(mpg ~ hp + factor(am), mtcars)
 fit2wt_am <- lm(mpg ~ wt + factor(am), mtcars)
+fit3wt_disp_am <- lm(mpg ~ wt + disp + factor(am), mtcars)
 fit3disp_gear_am <- lm(mpg ~ disp + factor(gear) + factor(am), mtcars)
 fit3gear_hp_am <- lm(mpg ~ factor(gear) + hp + factor(am), mtcars)
 fit3gear_wt_am <- lm(mpg ~ factor(gear) + wt + factor(am), mtcars)
@@ -88,6 +89,9 @@ fit3hp_disp_am <- lm(mpg ~ hp + disp + factor(am), mtcars)
 fit3hp_wt_am <- lm(mpg ~ hp + wt + factor(am), mtcars)
 fit4wt_hp_disp_am <- lm(mpg ~ wt + hp + disp + factor(am), mtcars)
 fit4wt_hp_gear_am <- lm(mpg ~ wt + hp + factor(gear) + factor(am), mtcars)
+fit4wt_disp_gear_am <- lm(mpg ~ wt + disp + factor(gear) + factor(am), mtcars)
+fit4hp_disp_gear_am <- lm(mpg ~ hp + disp + factor(gear) + factor(am), data = mtcars)
+fit5wt_hp_disp_gear_am <- lm(mpg ~ wt + hp + disp + factor(gear) + factor(am), mtcars)
 summary(fit3hp_wt_am)$call
 ```
 
@@ -108,6 +112,7 @@ fitint3hp_disp_am <- lm(mpg ~ hp + disp + factor(am) + factor(am):hp +
     factor(am):disp, mtcars)
 fitint3hp_wt_am <- lm(mpg ~ hp + wt + factor(am) + factor(am):hp + 
     factor(am):wt, mtcars)
+fitint3wt_disp_am <- lm(mpg ~ wt + disp + factor(am) + factor(am):wt +       factor(am):disp, mtcars)
 fitint4wt_hp_disp_am <- lm(mpg ~ wt + hp + disp + factor(am) + factor(am):wt + factor(am):hp + 
     factor(am):disp, mtcars)
 fitint4wt_hp_gear_am <- lm(mpg ~ wt + hp + factor(gear) + factor(am) + factor(am):wt + factor(am):hp + 
@@ -115,9 +120,43 @@ fitint4wt_hp_gear_am <- lm(mpg ~ wt + hp + factor(gear) + factor(am) + factor(am
 summary(fitint3hp_wt_am)$call
 ```
 
-Additionally, ANOVA comparisons (incrementally adding regressors from the preliminary set, defined in Appendix 3) were used in order to determine the best regressor mix for each model.  The first regressor candidates, given 
+Additionally, ANOVA comparisons (incrementally adding regressors from the preliminary set, defined in Appendix 3) were used in order to determine the best regressor mix for each model.  The order in which regressor candidates were added, followed the primary and secondary criteria specified in Appendix 3.  Therefore, the regressor sequences to be considered, were the following (all with 'am' included):
+
+1. 'wt' - 'hp' - 'disp'
+2. 'wt' - 'hp' - 'gear'
+3. 'hp' - 'disp' - 'gear'
+4. 'wt' - 'gear' - 'disp'
 
 ### Different intersection points, with same slopes
 
+```{r, echo=FALSE}
+anova(fit1am, fit2wt_am, fit3hp_wt_am, fit4wt_hp_disp_am)
+```
+
+ANOVA test with 2nd sequence (replacing 'disp' by 'gear') resulted in almost same outcome.
+
+Just in case, ANOVA analysis of the first sequence was carried on, reordering the sequence as follows: 'wt' - 'disp' - 'hp'
+
+```{r, echo=FALSE}
+anova(fit1am, fit2wt_am, fit3wt_disp_am, fit4wt_hp_disp_am)
+```
+
+Interestingly enough, the result sugests that all 4 regressors are relevant for the outcome.  Same test was carried on with the sequence number 2, with less promising results.
+
+Sequences 3 and 4 were not relevant as soon as regressors 'disp' or 'gear' were included (including sequence reordering).
+
+Therefore, for this type of model (different intersections, with same slopes), set of sequence's N°1 regressors is selected ('wt', 'hp', 'disp' and 'am' -just in case, an extra ANOVA sequence was carried on, including 'gear' as a fifth regressor, with no relevant result obtained-).
+
 ### Different intersection points and slopes
+
+ANOVA analysis to sequences 1 and 2 suggests 'wt', 'hp' and 'am' are the only relevant regressors (including 'disp' or 'gear' in any order, didn't make a difference) when including variable slopes.
+
+```{r, echo=FALSE}
+anova(fit1am, fitint2wt_am, fitint3hp_wt_am, fitint4wt_hp_gear_am)
+```
+
+Therefore, for this type of model, only 'wt', 'hp' and 'am' regressors were considered.
+
+## Appendix 5: Residual Plots
+
 
