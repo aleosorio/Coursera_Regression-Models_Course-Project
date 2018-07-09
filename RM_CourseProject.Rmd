@@ -57,17 +57,19 @@ summary(fitAll)$coef
 ```
 
 
-P-value based, no variable makes the cut (with 'hp' and 'wt' the closest, though). Therefore, the first conclusion was that some industry research was required in order to determine the best regressor candidates.
+With a P-value based criteria, no variable makes the cut (with 'hp' and 'wt' the closest, though). Therefore, the first conclusion was that some industry research was required in order to determine the best regressor candidates for 'mpg' outcome.
 
 After some web research (such as http://www.driverside.com/auto-library/top_10_factors_contributing_to_fuel_economy-317 and https://www.quora.com/On-what-factors-does-mileage-of-a-vehicle-depend), the main variables suggested (and therefore candidates for main regresors), were: displacement ('disp'), power ('hp'), aerodynamics, weight ('wt') and number of forward gears ('gear').
 
-Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Appendix 1 (such as the inverse relation between 'mpg' and  both 'hp' or 'wt' -both of which had the lowest P-values when including all variables in the model, as seen before-). Therefore, besides 'am' (required in order to answer the main question), they were selected as candidates for regression modeling in the next appendix.
+Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Appendix 1 (such as the inverse relation between 'mpg' and  both 'hp' or 'wt' -both of which had the lowest P-values when including all variables in the model, as seen before-). Therefore, including 'am' (required in order to answer the main question), they were selected as candidates for regression modeling in the next appendix.
+
+Finally, given the lowest P-value results obtained by 'wt' and 'hp' regressors (in comparison with the rest), plus well known Weight/Power KPI (Key Performance Indicator) from the industry, in further analysis both 'wt' and 'hp' will be considered primary potential regressors, while 'disp' and 'gear' will be considered secondary potential regressors.
 
 ## Appendix 4: Regression Modeling
 
 For the regression analysis, two types of models were used.
 
-The first one with different intersection points but the same slope for all regression lines (no interaction between 'am' -the dummy factor regressor- and the rest of the regressors), such as:
+The first one with different intersection points but the same slope for all regression lines (no interaction between 'am' -the binary factor regressor- and the rest of the regressors), such as:
 
 ```{r, echo=FALSE}
 fit1am <- lm(mpg ~ factor(am), mtcars)
@@ -113,7 +115,7 @@ fitint4wt_hp_gear_am <- lm(mpg ~ wt + hp + factor(gear) + factor(am) + factor(am
 summary(fitint3hp_wt_am)$call
 ```
 
-Additionally, ANOVA comparisons were used in order to determine the best regressor mix for each model.
+Additionally, ANOVA comparisons (incrementally adding regressors from the preliminary set, defined in Appendix 3) were used in order to determine the best regressor mix for each model.  The first regressor candidates, given 
 
 ### Different intersection points, with same slopes
 
