@@ -127,7 +127,7 @@ Additionally, ANOVA comparisons (incrementally adding regressors from the prelim
 3. 'hp' - 'disp' - 'gear'
 4. 'wt' - 'gear' - 'disp'
 
-### Different intersection points, with same slopes
+### Model 1: Different intersection points, with same slopes
 
 ```{r, echo=FALSE}
 anova(fit1am, fit2wt_am, fit3hp_wt_am, fit4wt_hp_disp_am)
@@ -145,9 +145,14 @@ Interestingly enough, the result sugests that all 4 regressors are relevant for 
 
 Sequences 3 and 4 were not relevant as soon as regressors 'disp' or 'gear' were included (including sequence reordering).
 
-Therefore, for this type of model (different intersections, with same slopes), set of sequence's N°1 regressors is selected ('wt', 'hp', 'disp' and 'am' -just in case, an extra ANOVA sequence was carried on, including 'gear' as a fifth regressor, with no relevant result obtained-).
+Therefore, for this type of model (different intersections, with same slopes), the following model was selected, with regressors: 'wt', 'hp', 'disp' and 'am' (just in case, an extra ANOVA sequence was carried on, including 'gear' as a fifth regressor, with no relevant result obtained).
 
-### Different intersection points and slopes
+```{r, echo=FALSE}
+fit4wt_hp_disp_am
+```
+
+
+### Model 2: Different intersection points and slopes
 
 ANOVA analysis to sequences 1 and 2 suggests 'wt', 'hp' and 'am' are the only relevant regressors (including 'disp' or 'gear' in any order, didn't make a difference) when including variable slopes.
 
@@ -155,8 +160,63 @@ ANOVA analysis to sequences 1 and 2 suggests 'wt', 'hp' and 'am' are the only re
 anova(fit1am, fitint2wt_am, fitint3hp_wt_am, fitint4wt_hp_gear_am)
 ```
 
-Therefore, for this type of model, only 'wt', 'hp' and 'am' regressors were considered.
+Therefore, for this type of model, only 'wt', 'hp' and 'am' regressors were considered, in the following model:
 
-## Appendix 5: Residual Plots
+```{r, echo=FALSE}
+fitint3hp_wt_am
+```
 
 
+## Appendix 5: Regression Diagnostics
+
+### Model 1: Different intersection points, with same slopes
+
+```{r, echo=FALSE}
+par(mfrow = c(2,2))
+plot(fit4wt_hp_disp_am, which = c(1,2,4,5))
+```
+
+### Model 2: Different intersection points and slopes
+
+```{r, echo=FALSE}
+par(mfrow = c(2,2))
+plot(fitint3hp_wt_am, which = c(1,2,4,5))
+```
+
+## Appendix 6: Confidence Intervals
+
+### Model 1: Different intersection points, with same slopes
+
+```{r, echo=FALSE}
+model1 <- fit4wt_hp_disp_am
+sumCoef1 <- summary(model1)$coef
+sumCoef1
+```
+
+Considering that the 5th row represents the impact on the intercept once we include the factor that the transmission is manual (without changing the slopes), the confidence interval for that impact is:
+
+```{r}
+sumCoef1[5,1] + c(-1,1) * qt(.975, df = model1$df) * sumCoef1[5,2]
+```
+
+Which means that, with a 95% confidence, we estimate that cars with a manual transmission result in a -0.79 to 5.1 general impact in MPG, compared to those with automatic transmission, at the average value of any of this model's regressors ('wt' or 'hp').
+
+### Model 2: Different intersection points and slopes
+
+```{r, echo=FALSE}
+model2 <- fitint3hp_wt_am
+sumCoef2 <- summary(model2)$coef
+sumCoef2
+```
+
+```{r}
+sumCoef2[4,1] + c(-1,1) * qt(.975, df = model2$df) * sumCoef2[4,2]
+```
+
+In this case, with a 95% confidence, we estimate that cars with a manual transmission result in a 5.06 to 22.4 general impact in MPG, compared to those with automatic transmission, at the average value of any of this model's regressors ('wt' or 'hp').  Additionally, considering the wt:factor(am)1 interaction for now (its P-value for hp, plus its slopes, makes the other interaction irrelevant for now):
+
+```{r}
+sumCoef2[3,1] + sumCoef2[6,1] + c(-1,1) * qt(.975, df = model2$df) * (sumCoef2[3,2] + sumCoef2[6,2])
+```
+
+With a 95% confidence, we also estimate that cars with a manual transmission result in a -13.8 to -1.42 added impact in MPG for each 1000 lbs increase in weight.
