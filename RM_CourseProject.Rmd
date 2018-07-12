@@ -1,7 +1,7 @@
 ---
 title: 'Peer-graded Assignment: Regression Models Course Project'
 author: "Alejandro Osorio"
-date: "June 29, 2018"
+date: "July 12, 2018"
 output:
   pdf_document: default
 ---
@@ -14,8 +14,27 @@ data(mtcars)
 mtcars <- data.frame(mtcars)
 ```
 
+Motor Trend (a magazine about the automobile industry) is interested in exploring the relationship between a set of variables and miles per gallon (MPG as outcome), by looking at a data set of a collection of cars.  They are particularly interested in the following two questions:
 
-## Appendix 1: Preliminary Data Analysis
+1. “Is an automatic or manual transmission better for MPG”
+2. "Quantify the MPG difference between automatic and manual transmissions"
+
+Take the 'mtcars' data set and write up an analysis to answer their question using regression models and exploratory data analyses.
+
+## General Considerations
+
+Fuel efficiency may depend on many variables, out of which the type of transmission may not be statistically relevant among them.  In spite of that, and given the need to have a reasonable understanding of the impact that specific variable has in gas consumption, the problem was approached as an inference one, based on a multivariable regression analysis.  The structure of the analysis consisted on the following steps:
+
+1. Preliminary data analysis
+2. Model selection
+3. Preliminary regressors
+4. Regression modeling
+5. Regression diagnostics
+6. Confidence intervals
+7. Conclusions
+
+
+## Preliminary Data Analysis
 
 Basic properties of the 'mtcars' dataset:
 
@@ -23,19 +42,32 @@ Basic properties of the 'mtcars' dataset:
 str(mtcars)
 ```
 
-So, we're talking of a small sample of only 32 observations.
+So, we're talking of a small sample of only 32 observations, with 11 variables, which are described as follows:
 
-Additionally, visual correlations among pairs of potential variables can be seen as follows:
+[, 1]	 mpg	 Miles/(US) gallon
+[, 2]	 cyl	 Number of cylinders
+[, 3]	 disp	 Displacement (cu.in.)
+[, 4]	 hp	 Gross horsepower
+[, 5]	 drat	 Rear axle ratio
+[, 6]	 wt	 Weight (1000 lbs)
+[, 7]	 qsec	 1/4 mile time
+[, 8]	 vs	 V/S
+[, 9]	 am	 Transmission (0 = automatic, 1 = manual)
+[,10]	 gear	 Number of forward gears
+[,11]	 carb	 Number of carburetors
+
+
+Additionally, visual correlations among pairs of variables from the dataset, can be seen as follows:
 
 ```{r, echo = FALSE}
 pairs(~ ., mtcars)
 ```
 
-## Appendix 2: Model Selection
+## Model Selection
 
-Given the nature of the analysis (continuous outcome, obtained from discrete and continuous regressors), the size of the dataset (only 32 observations), plus the visual correlations observed between 'mpg' (the outcome) and its potential regressors, the model to be used wil be linear (lm type), with 'am' as a not-so-dummy binary-factor variable.
+Given the nature of the analysis (continuous outcome, obtained from discrete and continuous regressors), the size of the dataset (only 32 observations), plus the visual correlations observed between 'mpg' (the outcome) and its potential regressors, the model chosen was of a linear (lm) type, with 'am' (type of transmission) as the main binary-factor variable, among any additional statistically significant variables for the outcome.
 
-## Appendix 3: Choosing Preliminary Regressors
+## Preliminary Regressors
 
 A preliminary analysis considered all mtcars variables as potential regressors.  With variables 'cyl', 'vs', 'am', 'gear' and 'carb' as factors, the following lm function was analysed:
 
@@ -54,15 +86,15 @@ summary(fitAll)$coef
 ```
 
 
-With a P-value based criteria, no variable makes the cut (with 'hp' and 'wt' the closest, though). Therefore, the first conclusion was that some industry research was required in order to determine the best regressor candidates for 'mpg' outcome.
+With a P-value based criteria, no variable would make the cut (with 'hp' and 'wt' the closest, though). Therefore, the first conclusion was that some industry research was required in order to determine the best regressor candidates for 'mpg' outcome.
 
 After some web research (such as http://www.driverside.com/auto-library/top_10_factors_contributing_to_fuel_economy-317 and https://www.quora.com/On-what-factors-does-mileage-of-a-vehicle-depend), the main variables suggested (and therefore candidates for main regresors), were: displacement ('disp'), power ('hp'), aerodynamics, weight ('wt') and number of forward gears ('gear').
 
-Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Appendix 1 (such as the inverse relation between 'mpg' and  both 'hp' or 'wt' -both of which had the lowest P-values when including all variables in the model, as seen before-). Therefore, including 'am' (required in order to answer the main question), they were selected as candidates for regression modeling in the next appendix.
+Besides aerodynamics (not available in the dataset), the visual correlations between them and 'mpg' are pretty clear, as seen in Preliminary Data Analysis (such as the inverse relation between 'mpg' and  both 'hp' or 'wt'). Therefore, including 'am' (required in order to answer the main question), they were selected as candidates for regression modeling in the next appendix.
 
-Finally, given the lowest P-value results obtained by 'wt' and 'hp' regressors (in comparison with the rest), plus the well known Weight/Power KPI (Key Performance Indicator) from the automotive industry, in further analysis both 'wt' and 'hp' will be considered primary potential regressors while 'disp' and 'gear' will be considered secondary potential regressors (just to prioritize further analysis. Cuantitative analysis will finally determine which regressors to keep).
+Finally, given the lowest P-value results obtained by 'wt' and 'hp' regressors (which interestingly enough build up the well known Weight/Power KPI) from the automotive industry, in further analysis both 'wt' and 'hp' were considered primary potential regressors while 'disp' and 'gear' were considered secondary potential regressors (just to prioritize further analysis. Cuantitative analysis would finally determine which regressors to keep).
 
-## Appendix 4: Regression Modeling
+## Regression Modeling
 
 For the regression analysis, two types of models were used.
 
@@ -118,7 +150,7 @@ fitint4wt_hp_gear_am <- lm(mpg ~ wt + hp + factor(gear) + factor(am) + factor(am
 summary(fitint3hp_wt_am)$call
 ```
 
-Additionally, ANOVA comparisons (incrementally adding regressors from the preliminary set, defined in Appendix 3) were used in order to determine the best regressor mix for each model.  The order in which regressor candidates were added, followed the primary and secondary criteria specified in Appendix 3.  Therefore, the regressor sequences to be considered, were the following (all with 'am' included):
+Additionally, ANOVA comparisons (incrementally adding regressors) were used in order to determine the best regressor mix for each model.  The order in which regressor candidates were added, followed the primary and secondary criteria specified before.  Therefore, the regressor sequences that were finally considered, were the following (all with 'am' included):
 
 1. 'wt' - 'hp' - 'disp'
 2. 'wt' - 'hp' - 'gear'
@@ -149,7 +181,7 @@ Therefore, model 4 passed the test for final P-value analysis of its coefficient
 summary(fit4wt_hp_disp_am)$coef
 ```
 
-Given the P-value > 0.05 for the 'hp:factor(am)'disp' regressor ('am' regressor is included anyway, being required as binary factor), the final model is as follows:
+Given the P-value > 0.05 for the 'hp:factor(am)'disp' regressor ('am' regressor is included anyway, being required as binary factor), the final type 1 model is as follows:
 
 ```{r, echo=FALSE}
 model1 <- fit3hp_wt_am
@@ -171,14 +203,14 @@ Therefore, model 3 passed the test for final P-value analysis of its coefficient
 summary(fitint3hp_wt_am)$coef
 ```
 
-Given the P-value > 0.05 for the hp:factor(am) coefficient, the final model is as follows:
+Given the P-value > 0.05 for the hp:factor(am) coefficient, the final type 2 model is as follows:
 
 ```{r, echo=FALSE}
 model2 <- fitint3hp_wt_am_nointhp
 summary(model2)$call
 ```
 
-## Appendix 5: Regression Diagnostics
+## Regression Diagnostics
 
 ### Model 1: Different intersection points, with same slopes
 
@@ -199,7 +231,7 @@ plot(model2, which = c(1,2,4,5))
 
 Redisual analysis looks good enough (no visible patterns).  Normal distribution of residuals, as well as their leverage, look a bit off though.  It probably requires further analysis of cases such as Masseratti Bora.
 
-## Appendix 6: Confidence Intervals
+## Confidence Intervals
 
 ### Model 1: Different intersection points, with same slopes
 
@@ -215,6 +247,8 @@ sumCoef1[4,1] + c(-1,1) * qt(.975, df = model1$df) * sumCoef1[4,2]
 ```
 
 Which means that, with a 95% confidence, we estimate that cars with a manual transmission result in a -0.74 to 4.9 general impact in MPG, compared to those with automatic transmission, at the average value of any of this model's regressors ('wt' or 'hp').
+
+The fact that the confidence interval includes the value 0, implies that, based on this model, the type of transmission could impact the MPG outcome in any possible way, which doesn't help answer the central question.
 
 ### Model 2: Different intersection points and slopes
 
@@ -234,3 +268,21 @@ sumCoef2[5,1] + c(-1,1) * qt(.975, df = model2$df) * sumCoef2[5,2]
 ```
 
 With a 95% confidence, we also estimate that cars with a manual transmission result in an extra -6.53 to -0.618 impact in MPG for each 1000 lbs increase in weight.
+
+Based on this model, then, it can be said that the type of transmission does have an observable impact on MPG, improving it when it comes down to a manual type.
+
+## Conclusions
+
+1. Based on multivariable linear regression, it went down to 2 main regressors when modeling the outcome.  Those were 'wt' and 'hp' (both with significant p-values).  Interestingly enough, those 2 regressors are widelly used by the automotive industry in the well known 'Weight/Power' KPI.
+
+2. The third regressor, 'am', was imposed as a binary factor, due to the main objective of the analysis (otherwise, given its high p-value, it would have been discarded as a relevant regressor for the outcome).
+
+3. Out of the two type of models used for the analysis (with and without interaction between the binary factor 'am' and the other regressors):
+  + The one without interactions suggested a confidence interval for the intersection, that included 0.  Therefore no relevant information could be obtained from it regarding the central question of the analysis.
+  + Model 2 (with interactions) suggested a positive impact of a manual transmission on the outcome (an expected increase on intercept values when the transmission is manual).  The confidence interval for the positive impact, with a 95% confidence, consists of a 3.3 to 19.8 extra MPG impact (for the intercepts).  Additionally, it suggests an additional negative impact on MPG, for every 1000 lbs of weight.
+
+4. Further leverage analysis is recomended, due to the probable impact of a couple of outliers in the model.
+
+5. Given the fact that the regression was based on linear models, further analysis with non linear models is also recomended.
+
+6. Finally, the small size of the dataset must also be taken into account before jumping into more serious conclusions.
