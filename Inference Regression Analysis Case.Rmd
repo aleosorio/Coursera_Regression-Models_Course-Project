@@ -281,8 +281,8 @@ Based on this model, then, it can be said that the type of transmission does hav
   + The one without interactions suggested a confidence interval for the intersection, that included 0.  Therefore no relevant information could be obtained from it regarding the central question of the analysis.
   + Model 2 (with interactions) suggested a positive impact of a manual transmission on the outcome (an expected increase on intercept values when the transmission is manual).  The confidence interval for the positive impact, with a 95% confidence, consists of a 3.3 to 19.8 extra MPG impact (for the intercepts).  Additionally, it suggests an additional negative impact on MPG, for every 1000 lbs of weight.
 
-4. Further leverage analysis is recomended, due to the probable impact of a couple of outliers in the model.
+4. Further leverage analysis is recommended, due to the probable impact of a couple of outliers in the model.
 
-5. Given the fact that the regression was based on linear models, further analysis with non linear models is also recomended.
+5. Given the fact that the regression was based on linear models, further analysis with non linear models is also recommended.
 
 6. Finally, the small size of the dataset must also be taken into account before jumping into more serious conclusions.
